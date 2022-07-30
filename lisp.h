@@ -1,3 +1,9 @@
+//CONS holds lists
+//ATOM atoms and digits
+//FUNC reference to a c func
+//LAMBDA holds lambda expr
+//
+
 enum type {CONS, ATOM, FUNC, LAMBDA};
 
 typedef struct {
