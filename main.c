@@ -7,7 +7,7 @@
 /*      DATA        */
 
 //make number
-object *atom(char *atom_name){
+object *atom(char  *atom_name){
     atom_object *ptr;
     char *name;
     size_t name_len;
@@ -30,7 +30,7 @@ object *atom(char *atom_name){
 
     strncpy(name, atom_name, name_len);
     ptr->name = name;
-   
+    printf("name: %s", name); 
     return (object*)ptr;
 }
 
@@ -39,25 +39,29 @@ object *atom(char *atom_name){
 /*      READ        */
 
 //peek at next byte
-int peek(int c){
-    
-    
-    c = getchar();
-    ungetc(c, stdin);
-    
-    return c;
-}
-
 object *next_token(int c){
-    
-    object *test;
-    
-     peek(c);
+   
+    char buffer[1024];
+    int ch, index;
 
-    return test;
+    ch = getchar();
+
+    if(ch == ')' || ch == '(')
+       return atom(")");
+    while(ch != ')'){
+        buffer[index++] = c;
+        ch = getchar();
+    }
+    
+    buffer[index++] = '\0';
+    if(ch == ')')
+        ungetc(c, stdin);
+    
+    return atom(buffer);
 }
 
-object *read(char in){
+
+object *read(int in){
     
     object *token = next_token(in);
     
@@ -85,9 +89,12 @@ int main(void)
 
     while(1){
 
-        int c = getchar(); 
+        int a = getchar();
+
+        read(a);
+
+        printf("%d", a);
         
-        printf("%d\n", c);
         
         //write(eval(read(c)));
     }
