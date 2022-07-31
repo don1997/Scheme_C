@@ -1,4 +1,4 @@
-typedef enum {NUMBER} object_type;
+typedef enum {NUMBER, ERROR} object_type;
 
 typedef struct object {
 
@@ -10,6 +10,7 @@ typedef struct object {
             int value;
         } number;
 
+    
     } data;
 
 } object;

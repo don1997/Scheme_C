@@ -2,15 +2,79 @@
 #include "lisp.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include <ctype.h>
 
 /*      DATA        */
 
+object *make_obj(){
 
-//make number
+    object *obj;
+
+    obj = malloc(sizeof(object));
+
+    if(obj == NULL){
+        printf("ERROR\n");
+        exit(1);
+    }
+
+    return obj;
+}
+
+
+
+object *makeNum(int a){
+
+    object *obj;
+
+    obj = make_obj();
+    obj->type = NUMBER;
+    obj->data.number.value = a;
+    
+    return obj;
+
+
+}
+
+object *make_error(){
+
+    object *obj;
+
+    obj = make_obj();
+    obj->type = ERROR;
+
+    return obj;
+
+}
+
+
+
 /*      READ        */
 
-//peek at next byte
+
+int peek(void) { 
+    
+    char c = getchar(); 
+    
+    ungetc(c, stdin); 
+    
+    return c; 
+}
+
+
+object *read(void){
+
+    int a = peek();
+    //if digit then...
+    if(isdigit(a)){
+        
+        return makeNum(a); 
+    }
+
+    printf("ERROR\n");
+    //since its not a digit it must be just an error....
+    return make_error(); 
+}
+
 /*
 object *next_token(int c){
    
@@ -34,10 +98,6 @@ object *next_token(int c){
 }
 */
 
-
-
-
-
 /*      EVAL        */
 
 
@@ -48,15 +108,30 @@ object *next_token(int c){
 
 
 
+
 int main(void)
 {
 
-    while(1){
+//    while(1){
+        
+        //int a = getchar();
 
+        //read(a);
+    object *obj;    
+
+    obj = read();
+
+    //if error
+    if(obj->type == ERROR){
         
-        
-        //write(eval(read(c)));
+        printf("ERROR\n");
+    
     }
+
+    free(obj);
+
+        //write(eval(read(c)));
+  //  }
 
 
     return 0;
