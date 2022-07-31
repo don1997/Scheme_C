@@ -111,8 +111,6 @@ void write(object *obj){
     if(obj->type == ERROR){
         
         printf("ERROR\n");
-        //exit(1);
-      //  return 1;
     }
 
     else{
@@ -120,8 +118,6 @@ void write(object *obj){
         printf("%d\n", obj->data.number.value);
     }
 
-
-    //return 0;
 }
 
 
@@ -129,41 +125,10 @@ void write(object *obj){
 
 int main(void)
 {
-    /*
-    int quit = 0;
-    int choice = 0;
-
-    do{
-        switch(choice){
-            case 0: 
-                choice = write(eval(read())); 
-                break;
-
-            case 1: 
-                printf("ERROR\n");
-                quit = 1;
-                break;
-        }
-    }while (quit == 0);
-*/
-/*
-
-    do{
-        
-        printf("> ");
-        a = write(eval(read()));
-        printf("\n");
+    while(1){
     
-    }while(a == 1);
-*/
-/*
-    while(write(eval(read())) == 0){
-        
         write(eval(read()));
     }
-  */
-    while(1){
-    write(eval(read()));
-    };
+    
     return 0;
 }
