@@ -20,8 +20,6 @@ object *make_obj(){
     return obj;
 }
 
-
-
 object *makeNum(int a){
 
     object *obj;
@@ -31,7 +29,6 @@ object *makeNum(int a){
     obj->data.number.value = a;
     
     return obj;
-
 
 }
 
@@ -46,10 +43,7 @@ object *make_error(){
 
 }
 
-
-
 /*      READ        */
-
 
 int peek(void) { 
     
@@ -68,9 +62,12 @@ object *read(void){
     if(isdigit(a)){
         
         return makeNum(a); 
+    
+        
+
+
     }
 
-    printf("ERROR\n");
     //since its not a digit it must be just an error....
     return make_error(); 
 }
@@ -83,7 +80,7 @@ object *eval(object *exp){
 }
 
 /*      WRITE       */
-void write(object *obj){
+int write(object *obj){
     
     if(obj->type == ERROR){
         
@@ -95,13 +92,24 @@ void write(object *obj){
 
         printf("%d\n", obj->data.number.value);
     }
+
+    return 1;
 }
+
+
 
 
 int main(void)
 {
+    int a = 0;
 
-    write(eval(read()));
+    do{
+        
+        printf("> ");
+        a = write(eval(read()));
+        printf("\n");
     
+    }while(a == 1);
+
     return 0;
 }
