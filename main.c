@@ -105,8 +105,19 @@ object *next_token(int c){
 
 
 /*      WRITE       */
+void write(object *obj){
+    
+    if(obj->type == ERROR){
+        
+        printf("ERROR\n");
+        exit(1);
+    }
 
+    else{
 
+        printf("%d\n", obj->data.number.value);
+    }
+}
 
 
 int main(void)
@@ -117,18 +128,12 @@ int main(void)
         //int a = getchar();
 
         //read(a);
-    object *obj;    
 
-    obj = read();
+    write(read());
 
     //if error
-    if(obj->type == ERROR){
-        
-        printf("ERROR\n");
     
-    }
 
-    free(obj);
 
         //write(eval(read(c)));
   //  }
