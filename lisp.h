@@ -1,51 +1,15 @@
-//CONS holds lists
-//ATOM atoms and digits
-//FUNC reference to a c func
-//LAMBDA holds lambda expr
-//
+typedef enum {NUMBER} object_type;
 
-enum type {CONS, ATOM, FUNC, LAMBDA};
+typedef struct object {
 
-typedef struct {
-    
-    enum type type;
+    object_type type;
+
+    union{
+        
+        struct {
+            int value;
+        } number;
+
+    } data;
 
 } object;
-
-
-typedef struct {
-    
-    enum type type;
-    
-    char *name;
-} atom_object;
-
-
-typedef struct {
-    
-    enum type type;
-
-    object *car;
-    object *cdr;
-
-} cons_object;
-
-
-typedef struct {
-    
-    enum type type;
-
-    object* (*fn)(object*, object*);
-
-} func_object;
-
-
-typedef struct {
-    
-    enum type type;
-
-    object* args;
-    object* sexp;
-
-} lambda_object;
-
