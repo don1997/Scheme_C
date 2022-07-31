@@ -75,34 +75,12 @@ object *read(void){
     return make_error(); 
 }
 
-/*
-object *next_token(int c){
-   
-    char buffer[1024];
-    int ch, index;
-
-    ch = getchar();
-
-    if(ch == ')' || ch == '(')
-       return atom(")");
-    while(ch != ')'){
-        buffer[index++] = c;
-        ch = getchar();
-    }
-    
-    buffer[index++] = '\0';
-    if(ch == ')')
-        ungetc(c, stdin);
-    
-    return atom(buffer);
-}
-*/
-
 /*      EVAL        */
+object *eval(object *exp){
+    
+    return exp;
 
-
-
-
+}
 
 /*      WRITE       */
 void write(object *obj){
@@ -123,21 +101,7 @@ void write(object *obj){
 int main(void)
 {
 
-//    while(1){
-        
-        //int a = getchar();
-
-        //read(a);
-
-    write(read());
-
-    //if error
+    write(eval(read()));
     
-
-
-        //write(eval(read(c)));
-  //  }
-
-
     return 0;
 }
