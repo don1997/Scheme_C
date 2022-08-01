@@ -168,9 +168,15 @@ object *read(void) {
      //   else {
         ungetc(c, stdin);
         //}
-        while (isdigit(c = getchar())) {
+       
+       // while (isdigit(c = getchar())) {
             //num = (num * 10) + (c - '0');
-            num = (num * 10)  + (c - '0');
+         //   num = (num * 10)  + (c - '0');
+       // }
+       
+        if(isdigit(c = getchar())){
+            printf("C IS %d", c);
+            num = (num * 10) + (c - '0');
         }
         num *= sign;
         if (is_delimiter(c)) {
@@ -189,22 +195,6 @@ object *read(void) {
     fprintf(stderr, "read illegal state\n");
     exit(1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*      EVAL        */
 object *eval(object *exp){
