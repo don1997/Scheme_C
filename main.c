@@ -4,8 +4,6 @@
 #include <string.h>
 #include <ctype.h>
 
-
-
 /*      DATA        */
 
 object *make_obj(){
@@ -116,10 +114,7 @@ object *read(void){
         while(isdigit(a = getchar()))
             num =  (num * 10) + (a - '0');
 
-    
-        return makeNum(num);
-
-    
+        return makeNum(num);    
     }
     
     else if(a == '#'){
@@ -136,16 +131,7 @@ object *read(void){
                 fprintf(stderr, "ERROR: UNKNOWN BOOL\n");
                 exit(1);
         }
-    }
-
-
-    else if(a == '\n'){
-        
-
-
-
-    }
-    
+    }    
 
     return make_error(); 
 
@@ -160,8 +146,6 @@ object *eval(object *exp){
 
 /*      WRITE       */
 void write(object *obj){
-   
-
     switch(obj->type){
         
         case BOOL:
@@ -175,7 +159,6 @@ void write(object *obj){
             exit(1); 
             break;
     }
-
 }
 
 
