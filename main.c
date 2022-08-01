@@ -149,7 +149,7 @@ void write(object *obj){
     switch(obj->type){
         
         case BOOL:
-            printf("%c", isFalse(obj) ? 'f' : 't');   
+            printf("#%c", isFalse(obj) ? 'f' : 't');   
             break;
         case NUMBER:
             printf("%d", obj->data.number.value);
