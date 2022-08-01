@@ -89,6 +89,54 @@ Then at the end it checks whetere theree is a space , EOF, ) etc and returns the
 ---
 All in all i will attempt to rewrite read() this time and actually produce the correct output.
 
+SNIPPET:
+ while(isdigit(a = getchar()))
+     num =  (a - '0');
+
+this snippet will output only the last number entered in the buffer
+
+SNIPPET:
+while(isdigit(a = getchar()))
+    num =  (num * 10) + (a - '0');
+
+this snippet sort of acts like cdr and prints only the eleements after the first eleemnt.
+
+
+SOLUTION!!:
+TO fix the above snippet however just add an ungetc above it  since it was stored in the buffer 
+
+like so:
+
+/*	CODE START	*/
+
+object *read(void){
+   
+    int num = 0;
+    int a = getchar();
+
+    if(isdigit(a)){
+       
+------------------------------------------- 
+        ungetc(a, stdin);
+--------------------------------------------------FIXES the missing first element of buffer               
+        while(isdigit(a = getchar()))
+            num =  (num * 10) + (a - '0');
+
+    
+        return makeNum(num);
+
+    
+    }
+    
+
+    return make_error(); 
+
+}
+
+/*	CODE END	*/
+
+
+So yeah found my fix and i will submit it 
 
 
 

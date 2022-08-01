@@ -46,12 +46,36 @@ object *make_error(){
 }
 
 /*      READ        */
-object *read(void){
+int isdelim(int a){
     
-    int a = 0;
+    return isspace(a) || a == EOF;
 
+}
 
-    return makeNum(a);
+object *read(void){
+   
+    int num = 0;
+
+    int a = getchar();
+    
+    //reads number
+    if(isdigit(a)){
+        
+        ungetc(a, stdin);
+
+        while(isdigit(a = getchar()))
+            num =  (num * 10) + (a - '0');
+
+    
+        return makeNum(num);
+
+    
+    }
+    
+    
+
+    return make_error(); 
+
 }
 
 
@@ -67,6 +91,7 @@ void write(object *obj){
     if(obj->type == ERROR){
         
         printf("ERROR\n");
+        exit(1);
     }
 
     else{
