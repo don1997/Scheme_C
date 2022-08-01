@@ -106,7 +106,8 @@ void write(object *obj){
 int main(void)
 {
     while(1){
-   
+
+        printf("> ");
         write(eval(read()));
         printf("\n");
     }
