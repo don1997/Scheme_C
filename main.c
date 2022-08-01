@@ -45,17 +45,67 @@ object *make_error(){
 
 }
 
+//global 
+object *false;
+object *true;
+
+void Initenv(void){
+
+    false = make_obj();
+    false->type = BOOL;
+    false->data.bool.value = 0;
+
+    true = make_obj();
+    true->type = BOOL;
+    true->data.bool.value = 1;
+}
+
+
 /*      READ        */
+
+char isBool(object *obj){
+
+    return obj->type == BOOL;
+}
+
+char isFalse(object *obj){
+    return obj == false;
+}
+
+char isTrue(object *obj){
+    return obj == true;
+}
+
+int isNum(object *obj){
+    return obj->type = NUMBER;
+}
+
 int isdelim(int a){
     
     return isspace(a) || a == EOF;
 
 }
 
+void eat_whitespace() {
+    int c;
+    
+    while ((c = getchar()) != EOF) {
+        if (isspace(c)) {
+            continue;
+        }
+        else if (c == ';') { /* comments are whitespace also */
+            while (((c = getchar()) != EOF) && (c != '\n'));
+            continue;
+        }
+        ungetc(c, stdin);
+        break;
+    }
+}
+
 object *read(void){
    
     int num = 0;
-
+    eat_whitespace();
     int a = getchar();
     
     //reads number
@@ -72,6 +122,29 @@ object *read(void){
     
     }
     
+    else if(a == '#'){
+
+        a = getchar();
+        
+        switch(a){
+
+            case 't':
+                return true;
+            case 'f':
+                return false;
+            default:
+                fprintf(stderr, "ERROR: UNKNOWN BOOL\n");
+                exit(1);
+        }
+    }
+
+
+    else if(a == '\n'){
+        
+
+
+
+    }
     
 
     return make_error(); 
@@ -87,24 +160,32 @@ object *eval(object *exp){
 
 /*      WRITE       */
 void write(object *obj){
-    
-    if(obj->type == ERROR){
+   
+
+    switch(obj->type){
         
-        printf("ERROR\n");
-        exit(1);
+        case BOOL:
+            printf("%c", isFalse(obj) ? 'f' : 't');   
+            break;
+        case NUMBER:
+            printf("%d", obj->data.number.value);
+            break;
+        case ERROR:
+            printf("ERROR\n");
+            exit(1); 
+            break;
     }
 
-    else{
-
-        printf("%d", obj->data.number.value);
-    }
-
-    
 }
 
 
 int main(void)
 {
+    
+    printf("Welcome to the interpreter! Press ctrl+c to exit\n");
+    
+    Initenv();
+
     while(1){
 
         printf("> ");

@@ -1,4 +1,4 @@
-typedef enum {NUMBER, ERROR} object_type;
+typedef enum {NUMBER, BOOL, ERROR} object_type;
 
 typedef struct object {
 
@@ -9,8 +9,12 @@ typedef struct object {
         struct {
             int value;
         } number;
-
+    
+        struct {
+            char value;
+        }bool;
     
     } data;
 
 } object;
+
