@@ -101,7 +101,9 @@ int isdelim(int a){
     return isspace(a) || a == EOF || a == '"' || a == ';' || a == ' ' || a == '(' || a == ')';
 }
 
-
+int isNewLine(int a){
+    return a =='\n';
+}
 
 //  Read() Helpers    //
 int peek(){
@@ -190,7 +192,6 @@ object *read_character(void){
                 return make_char_literal('\n');
             }
             break;
-
     }
 
 
@@ -247,6 +248,7 @@ object *eval(object *exp){
 
 /*      WRITE       */
 void write(object *obj){
+    
     switch(obj->type){
         
         char c;
@@ -270,18 +272,26 @@ void write(object *obj){
                 case ' ':
                     printf("space");
                     break;
-                case EOF:
-
-                    break;
                 default:
                     putchar(c);
                     break;
             }                
-
-
+///Note: couldn't get this to work for single characters 
+///kept throwing an error not sure what else was in the stream
+///only problem is now it doesn't throw any errors with input with numbers
+/*
         case ERROR:
-            printf("------WRITE ERROR--------\n");
-            exit(1); 
+               
+                if(!isspace(c)){ 
+                    printf("C IS: %c\n", c ); 
+                    printf("------WRITE ERROR--------\n");
+                    exit(1); 
+                
+                }
+            
+            break;
+*/
+        default:
             break;
     }
 }
