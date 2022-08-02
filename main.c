@@ -43,6 +43,18 @@ object *make_error(){
 
 }
 
+object *make_char_literal(int a){
+    
+    object *obj;
+
+    obj = make_obj();
+    obj->type = CHAR_LITERAL;
+    obj->data.character_literal.value = a;
+    
+    return obj;
+
+}
+
 //global 
 object *false;
 object *true;
@@ -78,11 +90,17 @@ int isNum(object *obj){
     return obj->type = NUMBER;
 }
 
+char isCharLiteral(object *obj){
+    return obj->type == CHAR_LITERAL;
+}
+
 int isdelim(int a){
     
     return isspace(a) || a == EOF;
 
 }
+
+
 
 void eat_whitespace() {
     int c;
@@ -101,6 +119,28 @@ void eat_whitespace() {
         ungetc(c, stdin);
         break;
     }
+}
+
+
+object *read_character(void){
+
+    int a;
+
+    a = getchar();
+
+    switch(a){
+        case EOF:
+
+            break;
+        case 's':
+            
+            break;
+        case 'n':
+
+            break;
+    }
+
+    return make_char_literal(a);
 }
 
 object *read(void){
@@ -130,12 +170,15 @@ object *read(void){
                 return true;
             case 'f':
                 return false;
+            case '\\':
+                read_character();
             default:
                 fprintf(stderr, "ERROR: UNKNOWN BOOL\n");
                 exit(1);
         }
     }    
 
+    //else
     return make_error(); 
 
 }
