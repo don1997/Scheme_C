@@ -51,11 +51,11 @@ void Initenv(void){
 
     false = make_obj();
     false->type = BOOL;
-    false->data.bool.value = 0;
+    false->data.boolean.value = 0;
 
     true = make_obj();
     true->type = BOOL;
-    true->data.bool.value = 1;
+    true->data.boolean.value = 1;
 }
 
 
@@ -91,10 +91,13 @@ void eat_whitespace() {
         if (isspace(c)) {
             continue;
         }
+
         else if (c == ';') { /* comments are whitespace also */
+            
             while (((c = getchar()) != EOF) && (c != '\n'));
             continue;
         }
+        
         ungetc(c, stdin);
         break;
     }
@@ -154,6 +157,10 @@ void write(object *obj){
         case NUMBER:
             printf("%d", obj->data.number.value);
             break;
+        case CHAR_LITERAL:
+            printf("dummy");
+            break;
+
         case ERROR:
             printf("ERROR\n");
             exit(1); 
