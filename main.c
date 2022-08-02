@@ -43,7 +43,7 @@ object *make_error(){
 
 }
 
-object *make_char_literal(int a){
+object *make_char_literal(char a){
     
     object *obj;
 
@@ -73,6 +73,8 @@ void Initenv(void){
 
 /*      READ        */
 
+
+//  Selectors   //
 char isBool(object *obj){
 
     return obj->type == BOOL;
@@ -95,12 +97,51 @@ char isCharLiteral(object *obj){
 }
 
 int isdelim(int a){
-    
-    return isspace(a) || a == EOF;
 
+    return isspace(a) || a == EOF || a == '"' || a == ';' || a == ' ' || a == '(' || a == ')';
 }
 
 
+
+//  Read() Helpers    //
+int peek(){
+    int a;
+
+    a = getchar();
+
+    ungetc(a, stdin);
+
+    return a;
+}
+
+
+void expect_delim(){
+
+     if (!isdelim(peek())) {
+        fprintf(stderr, "character not followed by delimiter\n");
+        exit(1);
+    }
+}
+
+
+
+void eat_expect_string(char *str){
+
+    int c;
+
+    while (*str != '\0') {
+        
+        c = getchar();
+
+        if (c != *str) {
+            fprintf(stderr, "unexpected character '%c'\n", c);
+            exit(1);
+        }
+
+        str++;
+    }
+
+}
 
 void eat_whitespace() {
     int c;
@@ -130,16 +171,30 @@ object *read_character(void){
 
     switch(a){
         case EOF:
-
+                fprintf(stderr, "ERROR: incomplete character literal\n");
+                exit(1);
             break;
         case 's':
-            
+            if(peek() == 'p'){
+                
+                eat_expect_string("pace");
+                expect_delim();
+                return make_char_literal(' ');
+            }
             break;
         case 'n':
 
+            if(peek() == 'e'){
+                eat_expect_string("ewline");
+                expect_delim();
+                return make_char_literal('\n');
+            }
             break;
+
     }
 
+
+    expect_delim();
     return make_char_literal(a);
 }
 
@@ -151,9 +206,8 @@ object *read(void){
     
     //reads number
     if(isdigit(a)){
-        
+         
         ungetc(a, stdin);
-
         while(isdigit(a = getchar()))
             num =  (num * 10) + (a - '0');
 
@@ -171,9 +225,9 @@ object *read(void){
             case 'f':
                 return false;
             case '\\':
-                read_character();
+                return read_character();
             default:
-                fprintf(stderr, "ERROR: UNKNOWN BOOL\n");
+                fprintf(stderr, "ERROR: UNKNOWN BOOL OR CHAR LITERAL\n");
                 exit(1);
         }
     }    
@@ -183,6 +237,7 @@ object *read(void){
 
 }
 
+/*      EVAL        */
 
 object *eval(object *exp){
     
@@ -194,6 +249,8 @@ object *eval(object *exp){
 void write(object *obj){
     switch(obj->type){
         
+        char c;
+
         case BOOL:
             printf("#%c", isFalse(obj) ? 'f' : 't');   
             break;
@@ -201,11 +258,29 @@ void write(object *obj){
             printf("%d", obj->data.number.value);
             break;
         case CHAR_LITERAL:
-            printf("dummy");
-            break;
+
+            c = obj->data.character_literal.value;
+            
+            printf("#\\");
+
+            switch(c){
+                case '\n':
+                    printf("newline");
+                    break;
+                case ' ':
+                    printf("space");
+                    break;
+                case EOF:
+
+                    break;
+                default:
+                    putchar(c);
+                    break;
+            }                
+
 
         case ERROR:
-            printf("ERROR\n");
+            printf("------WRITE ERROR--------\n");
             exit(1); 
             break;
     }
