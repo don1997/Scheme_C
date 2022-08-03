@@ -55,6 +55,19 @@ object *make_char_literal(char a){
 
 }
 
+object *make_string(char *a){
+    
+    object *obj;
+
+    obj = make_obj();
+    obj->type = STRING;
+    obj->data.string_val.value = a;
+
+    return obj;
+}
+
+
+
 //global 
 object *false;
 object *true;
@@ -103,6 +116,11 @@ int isdelim(int a){
 
 int isNewLine(int a){
     return a =='\n';
+}
+
+char isString(object *obj){
+
+    return obj->type = STRING;
 }
 
 //  Read() Helpers    //
@@ -201,6 +219,13 @@ object *read_character(void){
 
 object *read(void){
    
+    int i;
+
+#define BUFFER_MAX 1000
+
+    char buffer[BUFFER_MAX];
+
+
     int num = 0;
     eat_whitespace();
     int a = getchar();
@@ -231,7 +256,36 @@ object *read(void){
                 fprintf(stderr, "ERROR: UNKNOWN BOOL OR CHAR LITERAL\n");
                 exit(1);
         }
-    }    
+    }   
+
+    else if(a == '"'){
+
+        i = 0;
+
+        while ((a = getchar()) != '"'){
+            if(a == '\\'){
+                a = getchar();
+                if (a == '\n'){
+                    a ='\n'; 
+                }
+            }
+
+            if(a == EOF){
+                fprintf(stderr, "non-terminated string literal\n");
+            }
+
+            //subtracts 1 to save space for '\0'
+
+            if(i < BUFFER_MAX - 1){
+                buffer[i++] = a;
+            }
+            else {
+                printf("ERROR\n");
+            }
+        }
+        buffer[i] = '\0';
+        return make_string(buffer);
+    } 
 
     //else
     return make_error(); 
@@ -275,7 +329,12 @@ void write(object *obj){
                 default:
                     putchar(c);
                     break;
-            }                
+            }
+
+        case STRING:
+            printf("%s", obj->data.string_val.value);
+            break;
+
 ///Note: couldn't get this to work for single characters 
 ///kept throwing an error not sure what else was in the stream
 ///only problem is now it doesn't throw any errors with input with numbers
