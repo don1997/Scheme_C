@@ -61,8 +61,13 @@ object *make_string(char *a){
 
     obj = make_obj();
     obj->type = STRING;
-    obj->data.string_val.value = a;
+    obj->data.string_val.value = malloc(strlen(a) + 1);
+    if(obj->data.string_val.value == NULL){
+        fprintf(stderr, "out of memory\n");
+        exit(1);
+    }
 
+    strcpy(obj->data.string_val.value, a);
     return obj;
 }
 
@@ -302,10 +307,11 @@ object *eval(object *exp){
 
 /*      WRITE       */
 void write(object *obj){
-    
+    char c;
+    char *str;
+
     switch(obj->type){
         
-        char c;
 
         case BOOL:
             printf("#%c", isFalse(obj) ? 'f' : 't');   
@@ -331,8 +337,30 @@ void write(object *obj){
                     break;
             }
 
+            break;
         case STRING:
-            printf("%s", obj->data.string_val.value);
+            
+            str = obj->data.string_val.value;
+            
+            putchar('"');
+            while(*str != '\0'){
+                switch(*str){
+
+                    case '\\':
+                        printf("\\\\");
+                        break;
+                    case '\n':
+                        printf("\\n");
+                        break;
+                    case '"' :
+                        printf("\\\"");
+                        break;
+                    default:
+                        putchar(*str);
+                }
+                str++;
+            }
+            putchar('"');
             break;
 
 ///Note: couldn't get this to work for single characters 
