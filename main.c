@@ -97,7 +97,6 @@ object *cons(object *car, object *cdr){
 
 char isEmptyList(object *obj);
 object *make_symbol(char *a){
-
     object *obj;
 
     object *element;
@@ -106,7 +105,7 @@ object *make_symbol(char *a){
     
     while(!isEmptyList(element)){
         if(strcmp(car(element)->data.symbol.value, a) == 0){
-            return cdr(element);
+            return car(element);
         }
         
         element = cdr(element);
@@ -126,6 +125,33 @@ object *make_symbol(char *a){
 
     symbol_table = cons(obj, symbol_table);
     return obj;
+//////////////////////
+///
+///
+
+/*
+    object *obj;
+    object *element;
+    
+    element = symbol_table;
+    while (!isEmptyList(element)) {
+        if (strcmp(car(element)->data.symbol.value, value) == 0) {
+            return car(element);
+        }
+        element = cdr(element);
+    };
+    
+    obj = make_obj();
+    obj->type = SYMBOL;
+    obj->data.symbol.value = malloc(strlen(value) + 1);
+    if (obj->data.symbol.value == NULL) {
+        fprintf(stderr, "out of memory\n");
+        exit(1);
+    }
+    strcpy(obj->data.symbol.value, value);
+    symbol_table = cons(obj, symbol_table);
+    return obj;
+*/
 }
 
 
@@ -529,7 +555,6 @@ object *read(void){
     }
     else if(a == '\''){
         return cons(quote_symbol, cons(read(), empty_list));
-
     }
     
     else {
