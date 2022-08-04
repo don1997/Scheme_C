@@ -6,6 +6,17 @@
 
 /*      DATA        */
 
+//global
+
+object *symbol_table;
+object *false;
+object *true;
+object *empty_list;
+
+object *cons(object *car, object *cdr);
+object *car(object *pair);
+object *cdr(object *pair);
+
 object *make_obj(){
 
     object *obj;
@@ -82,20 +93,39 @@ object *cons(object *car, object *cdr){
     return obj;
 }
 
-void make_symbol(){
+char isEmptyList(object *obj);
+object *make_symbol(char *a){
 
-    //INSERT HERE
+    object *obj;
 
+    object *element;
+
+    element = symbol_table;
+    
+    while(!isEmptyList(element)){
+        if(strcmp(car(element)->data.symbol.value, a) == 0){
+            return cdr(element);
+        }
+        
+        element = cdr(element);
+    }
+
+    //create symbol and add it to the symbol table
+    obj = make_obj();
+    obj->type = SYMBOL;
+    obj->data.symbol.value = malloc(strlen(a) + 1);
+
+    if(obj->data.symbol.value == NULL){
+        fprintf(stderr, "out of memory\n");
+        exit(1);
+    }
+
+    strcpy(obj->data.symbol.value, a);
+
+    symbol_table = cons(obj, symbol_table);
+    return obj;
 }
 
-
-//global 
-object *false;
-object *true;
-
-//INSERT SYM table 
-
-object *empty_list;
 
 void Initenv(void){
 
@@ -109,6 +139,8 @@ void Initenv(void){
     true = make_obj();
     true->type = BOOL;
     true->data.boolean.value = 1;
+    
+    symbol_table = empty_list;
 }
 
 
@@ -211,6 +243,13 @@ void set_cdr(object *obj, object *value){
 #define cddadr(obj) cdr(cdr(car(cdr(obj))))
 #define cdddar(obj) cdr(cdr(cdr(car(obj))))
 #define cddddr(obj) cdr(cdr(cdr(cdr(obj))))
+
+
+char is_initial(int c){
+    return isalpha(c) || c == '*'|| c == '+' || c == '-' || c == '/' ||
+                      c == '>' || c =='<' || c == '=' || c =='?' || c == '!';
+                      
+}
 
 //  Read() Helpers    //
 int peek(){
@@ -451,9 +490,34 @@ object *read(void){
     }
 
     //READ SYMBOL HERE
-//    else if(){
+    else if(is_initial(a) ||
+            ((a == '+' || a == '-') &&
+            isdelim(peek()))){
         
-  //  }
+        i = 0;
+        
+        while(is_initial(a) || isdigit(a) ||
+                a == '+' || a == '-'){
+                    if(i < BUFFER_MAX){
+                        buffer[i++] = a;
+                    } else {
+                    fprintf(stderr, "symbol too long. " "maxium length is %d\n", BUFFER_MAX);
+                    exit(1);
+                    
+                }
+
+            a = getchar();
+        }
+        if(isdelim(a)){
+            buffer[i] = '\0';
+            ungetc(a, stdin);
+            return make_symbol(buffer);
+        }
+        else {
+            fprintf(stderr, "symbol not followed by delim. " "Found '%c'\n", a);
+            exit(1);
+        }
+    }
 
     else if(a == '('){
         
