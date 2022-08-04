@@ -264,6 +264,54 @@ object *read_character(void){
     return make_char_literal(a);
 }
 
+object *read(void);
+
+object *read_pair(){
+
+    int a;
+
+    object *car_obj;
+    object *cdr_obj;
+
+    eat_whitespace();
+
+    a = getchar();
+
+    if(a == ')'){
+        return empty_list;
+    }
+
+    ungetc(a, stdin);
+
+    car_obj = read();
+
+    eat_whitespace();
+
+
+    a = getchar();
+    if(a == '.'){
+        a = peek();
+        if(!isdelim(a)){
+            printf("ERROR\n");
+        }
+
+        cdr_obj = read();
+        eat_whitespace();
+        a = getchar();
+        if(a != ')'){
+            printf("ERROR\n");
+        }
+
+        return cons(car_obj, cdr_obj);
+    } else {
+
+    ungetc(a, stdin);
+    cdr_obj = read_pair();
+    return cons(car_obj, cdr_obj);
+
+    }
+}
+
 object *read(void){
    
     int i;
@@ -334,12 +382,14 @@ object *read(void){
         return make_string(buffer);
     }
     else if(a == '('){
-        eat_whitespace();
-        a = getchar();
-        if(a == ')')
-            return empty_list;
+        
+        read_pair();
     }
-
+    else {
+        fprintf(stderr, "bad input. Unexpected '%c'\n", a);
+        exit(1);
+    }
+    
     //else
     return make_error(); 
 
@@ -354,6 +404,35 @@ object *eval(object *exp){
 }
 
 /*      WRITE       */
+
+
+void write(object *obj);
+
+void write_pair(object *pair){
+
+    object *car_obj;
+    object *cdr_obj;
+
+    car_obj = car(pair);
+    cdr_obj = cdr(pair);
+
+    write(car_obj);
+
+    if(cdr_obj-> type == PAIR){
+        printf(" ");
+        write_pair(cdr_obj);
+    }
+
+    else if(cdr_obj->type == EMPTYLIST){
+        return;
+    }
+
+    else {
+        printf(" . ");
+        write(cdr_obj);
+    }
+}
+
 void write(object *obj){
     char c;
     char *str;
@@ -419,7 +498,7 @@ void write(object *obj){
         case PAIR:
             
             printf("(");
-           // writepair()
+            write_pair(obj);
             printf(")");
             break;
 ///Note: couldn't get this to work for single characters 
