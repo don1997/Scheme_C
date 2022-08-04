@@ -77,7 +77,12 @@ object *make_string(char *a){
 object *false;
 object *true;
 
+object *empty_list;
+
 void Initenv(void){
+
+    empty_list = make_obj();
+    empty_list->type = EMPTYLIST;
 
     false = make_obj();
     false->type = BOOL;
@@ -126,6 +131,10 @@ int isNewLine(int a){
 char isString(object *obj){
 
     return obj->type = STRING;
+}
+
+char isEmptyList(object *obj){
+    return obj->type = EMPTYLIST;
 }
 
 //  Read() Helpers    //
@@ -290,7 +299,13 @@ object *read(void){
         }
         buffer[i] = '\0';
         return make_string(buffer);
-    } 
+    }
+    else if(a == '('){
+        eat_whitespace();
+        a = getchar();
+        if(a == ')')
+            return empty_list;
+    }
 
     //else
     return make_error(); 
@@ -361,6 +376,11 @@ void write(object *obj){
                 str++;
             }
             putchar('"');
+            break;
+
+        case EMPTYLIST:
+            
+            printf("()");
             break;
 
 ///Note: couldn't get this to work for single characters 

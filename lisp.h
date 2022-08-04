@@ -1,4 +1,4 @@
-typedef enum { NUMBER, BOOL, CHAR_LITERAL, STRING, ERROR } object_type;
+typedef enum { NUMBER, BOOL, CHAR_LITERAL, STRING, EMPTYLIST, ERROR } object_type;
 
 typedef struct object {
 
