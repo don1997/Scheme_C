@@ -82,10 +82,18 @@ object *cons(object *car, object *cdr){
     return obj;
 }
 
+void make_symbol(){
+
+    //INSERT HERE
+
+}
+
 
 //global 
 object *false;
 object *true;
+
+//INSERT SYM table 
 
 object *empty_list;
 
@@ -151,6 +159,11 @@ char isEmptyList(object *obj){
 char isPair(object *obj){
     return obj->type == PAIR;
 }
+
+char isSymbol(object *obj){
+    return obj->type == SYMBOL;
+}
+
 
 ////set cdr and car
 
@@ -436,10 +449,18 @@ object *read(void){
         buffer[i] = '\0';
         return make_string(buffer);
     }
+
+    //READ SYMBOL HERE
+//    else if(){
+        
+  //  }
+
     else if(a == '('){
         
        return read_pair();
     }
+
+    
     else {
         fprintf(stderr, "bad input. Unexpected '%c'\n", a);
         exit(1);
@@ -553,6 +574,9 @@ void write(object *obj){
             printf("(");
             write_pair(obj);
             printf(")");
+            break;
+        case SYMBOL:
+            printf("%s", obj->data.symbol.value);
             break;
 ///Note: couldn't get this to work for single characters 
 ///kept throwing an error not sure what else was in the stream
