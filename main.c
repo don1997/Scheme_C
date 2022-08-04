@@ -12,7 +12,9 @@ object *symbol_table;
 object *false;
 object *true;
 object *empty_list;
+object *quote_symbol;
 
+//forward declare
 object *cons(object *car, object *cdr);
 object *car(object *pair);
 object *cdr(object *pair);
@@ -141,6 +143,8 @@ void Initenv(void){
     true->data.boolean.value = 1;
     
     symbol_table = empty_list;
+    
+    quote_symbol = make_symbol("quote");
 }
 
 
@@ -162,7 +166,7 @@ char isTrue(object *obj){
 }
 
 int isNum(object *obj){
-    return obj->type = NUMBER;
+    return obj->type == NUMBER;
 }
 
 char isCharLiteral(object *obj){
@@ -523,7 +527,10 @@ object *read(void){
         
        return read_pair();
     }
+    else if(a == '\''){
+        return cons(quote_symbol, cons(read(), empty_list));
 
+    }
     
     else {
         fprintf(stderr, "bad input. Unexpected '%c'\n", a);
@@ -537,9 +544,48 @@ object *read(void){
 
 /*      EVAL        */
 
+char is_self_eval(object *exp){
+    return isBool(exp) || isNum(exp) || isCharLiteral(exp) ||
+        isString(exp);
+}
+
+
+char is_tagged_list(object *exp, object *tag){
+
+    object *the_car;
+
+    if(isPair(exp)) {
+        the_car = car(exp);
+        return isSymbol(the_car) && (the_car == tag);
+
+    }
+    return 0;
+
+}
+
+char is_quoted(object *exp){
+    return is_tagged_list(exp, quote_symbol);
+}
+
+object *text_of_quotation(object *exp){
+    return cadr(exp);
+}
+
 object *eval(object *exp){
+
+    if(is_self_eval(exp)){
+        return exp;
+    }
+
+
+    else if(is_quoted(exp)){
+        return text_of_quotation(exp);
+    }
     
-    return exp;
+    else {
+        fprintf(stderr, "cannot eval unknown expression type\n");
+        exit(1);
+    }
 
 }
 
