@@ -71,6 +71,16 @@ object *make_string(char *a){
     return obj;
 }
 
+object *cons(object *car, object *cdr){
+    object *obj;
+
+    obj = make_obj();
+    obj->type = PAIR;
+    
+    obj->data.pair.car = car;
+    obj->data.pair.cdr = cdr;
+    return obj;
+}
 
 
 //global 
@@ -130,11 +140,34 @@ int isNewLine(int a){
 
 char isString(object *obj){
 
-    return obj->type = STRING;
+    return obj->type == STRING;
 }
 
 char isEmptyList(object *obj){
-    return obj->type = EMPTYLIST;
+    return obj->type == EMPTYLIST;
+}
+
+
+char isPair(object *obj){
+    return obj->type == PAIR;
+}
+
+////set cdr and car
+
+object *car(object *pair){
+    return pair->data.pair.car;
+}
+
+void set_car(object *obj, object *value){
+    obj->data.pair.car = value;
+}
+
+object *cdr(object *pair){
+    return pair->data.pair.cdr;
+}
+
+void set_cdr(object *obj, object *value){
+    obj->data.pair.cdr =  value;
 }
 
 //  Read() Helpers    //
@@ -383,6 +416,12 @@ void write(object *obj){
             printf("()");
             break;
 
+        case PAIR:
+            
+            printf("(");
+           // writepair()
+            printf(")");
+            break;
 ///Note: couldn't get this to work for single characters 
 ///kept throwing an error not sure what else was in the stream
 ///only problem is now it doesn't throw any errors with input with numbers

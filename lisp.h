@@ -1,4 +1,4 @@
-typedef enum { NUMBER, BOOL, CHAR_LITERAL, STRING, EMPTYLIST, ERROR } object_type;
+typedef enum { NUMBER, BOOL, CHAR_LITERAL, STRING, EMPTYLIST, ERROR, PAIR} object_type;
 
 typedef struct object {
 
@@ -21,6 +21,12 @@ typedef struct object {
         struct {
             char *value;
         } string_val;
+
+        struct {
+            struct object *car;
+            struct object *cdr;
+
+        } pair;
 
     } data;
 
