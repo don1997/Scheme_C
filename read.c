@@ -44,10 +44,6 @@ char isString(object *obj){
     return obj->type == STRING;
 }
 
-char isEmptyList(object *obj){
-    return obj->type == EMPTYLIST;
-}
-
 
 char isPair(object *obj){
     return obj->type == PAIR;

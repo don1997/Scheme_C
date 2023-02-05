@@ -38,7 +38,15 @@ void Initenv(void){
     
     symbol_table = empty_list;
     
-    quote_symbol = make_symbol("quote");  
+    quote_symbol = make_symbol("quote");
+    define_symbol = make_symbol("define");
+    set_symbol = make_symbol("set!");
+    ok_symbol = make_symbol("ok");
+
+    the_empty_environment = empty_list;
+
+    global_environment = setup_environment();
+      
 }
 
 

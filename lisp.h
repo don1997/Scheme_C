@@ -1,4 +1,4 @@
-typedef enum { NUMBER, BOOL, CHAR_LITERAL, STRING, EMPTYLIST, ERROR, PAIR, SYMBOL} object_type;
+typedef enum {NUMBER, BOOL, CHAR_LITERAL, STRING, EMPTYLIST, ERROR, PAIR, SYMBOL} object_type;
 
 typedef struct object {
 
@@ -44,6 +44,13 @@ extern object *true;
 extern object *empty_list;
 extern object *quote_symbol;
 
+extern object *define_symbol;
+extern object *set_symbol;
+extern object *set_symbol;
+extern object *ok_symbol;
+extern object *the_empty_environment;
+extern object *global_environment;
+
 
 object *car(object *pair);
 
@@ -85,7 +92,14 @@ void set_cdr(object *obj, object *value);
 
 /*      DATA        */
 
+void add_binding_to_frame(object *var, object *val, object *frame);
+object *enclosing_environment(object *env);
+object *first_frame(object *env);
 
+object *make_frame(object *var, object *val);
+
+object *frame_variables(object *frame);
+object *frame_values(object *frame);
 object *make_obj();
 object *makeNum(int a);
 object *make_error();
@@ -93,6 +107,12 @@ object *make_char_literal(char a);
 object *make_string(char *a);
 object *make_symbol(char *a);
 object *cons(object *car, object *cdr);
+object *extend_environment(object *var, object *values, object *base_env);
+void define_variable(object *var, object *value, object *env);
+object *lookup_variable_value(object *var, object *env);
+void set_variable_value(object *var, object *value, object *env);
+
+object *setup_environment(void);
 
 
 /*      READ        */
