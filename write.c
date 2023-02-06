@@ -105,6 +105,11 @@ void write(object *obj){
         case SYMBOL:
             printf("%s", obj->data.symbol.value);
             break;
+        
+        case COMPOUND_PROC:
+        case PRIMITIVE_PROC:
+            printf("#<procedure>");
+            break;
 ///Note: couldn't get this to work for single characters 
 ///kept throwing an error not sure what else was in the stream
 ///only problem is now it doesn't throw any errors with input with numbers

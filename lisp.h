@@ -1,4 +1,4 @@
-typedef enum {NUMBER, BOOL, CHAR_LITERAL, STRING, EMPTYLIST, ERROR, PAIR, SYMBOL} object_type;
+typedef enum {NUMBER, BOOL, CHAR_LITERAL, STRING, EMPTYLIST, ERROR, PAIR, SYMBOL, PRIMITIVE_PROC, COMPOUND_PROC} object_type;
 
 typedef struct object {
 
@@ -34,6 +34,17 @@ typedef struct object {
 
         } symbol;
 
+        struct {
+            struct object *(*fn)(struct object *arguements);
+
+        }primitive_proc;
+
+        struct{
+          struct object *parameters;
+          struct object *body;
+          struct object *env;
+        } compound_proc;
+
     } data;
 
 } object;
@@ -51,7 +62,8 @@ extern object *ok_symbol;
 extern object *the_empty_environment;
 extern object *global_environment;
 
-
+extern object *if_symbol;
+extern object *lambda_symbol;
 object *car(object *pair);
 
 void set_car(object *obj, object *value);
@@ -64,6 +76,7 @@ void set_cdr(object *obj, object *value);
 #define cadr(obj)   car(cdr(obj))
 #define cdar(obj)   cdr(car(obj))
 #define cddr(obj)   cdr(cdr(obj))
+#define caar(obj)   car(car(obj))
 #define caaar(obj)  car(car(car(obj)))
 #define caadr(obj)  car(car(cdr(obj)))
 #define cadar(obj)  car(cdr(car(obj)))
@@ -114,6 +127,77 @@ void set_variable_value(object *var, object *value, object *env);
 
 object *setup_environment(void);
 
+object *add_proc(object *arguments);
+object *make_primitive_proc(
+           object *(*fn)(struct object *arguments));
+
+//STD PROCS
+//
+
+char is_primitive_proc(object *obj);
+
+object *is_null_proc(object *arguments);
+object *is_boolean_proc(object *arguments);
+object *is_symbol_proc(object *arguments);
+
+object *is_integer_proc(object *arguments);
+
+object *is_char_proc(object *arguments);
+
+object *is_string_proc(object *arguments);
+
+object *is_pair_proc(object *arguments);
+
+object *is_procedure_proc(object *arguments);
+
+object *char_to_integer_proc(object *arguments);
+
+object *integer_to_char_proc(object *arguments);
+
+object *number_to_string_proc(object *arguments);
+
+object *string_to_number_proc(object *arguments);
+
+object *symbol_to_string_proc(object *arguments);
+
+object *string_to_symbol_proc(object *arguments);
+
+object *add_proc(object *arguments);
+    
+object *sub_proc(object *arguments);
+
+object *mul_proc(object *arguments);
+    
+object *quotient_proc(object *arguments);
+
+object *remainder_proc(object *arguments);
+
+object *is_number_equal_proc(object *arguments);
+
+object *is_less_than_proc(object *arguments);
+
+object *is_greater_than_proc(object *arguments);
+object *cons_proc(object *arguments);
+
+object *car_proc(object *arguments);
+
+object *cdr_proc(object *arguments);
+
+object *set_car_proc(object *arguments);
+
+object *set_cdr_proc(object *arguments);
+
+object *list_proc(object *arguments);
+
+object *is_eq_proc(object *arguments);
+
+object *make_compound_proc(object *parameters, object *body,
+                           object* env);
+
+char is_compound_proc(object *obj);
+
+char is_last_exp(object *seq);
+//STD PROCS
 
 /*      READ        */
 
@@ -144,11 +228,24 @@ object *read_pair();
 /*      EVAL        */
 
 char is_self_eval(object *exp);
+char is_variable(object *expression);
 char is_tagged_list(object *exp, object *tag);
+
 char is_quoted(object *exp);
 object *text_of_quotation(object *exp);
-object *eval(object *exp);
+char is_assignment(object *exp);
+object *assignment_value(object *exp);
+char is_definition(object *exp);
+object *definition_variable(object *exp);
+object *definition_value(object *exp);
+char is_if(object *expression);
+object *if_predicate(object *exp);
+object *if_consequent(object *exp);
+object *if_alternative(object *exp);
 
+object *eval_assignment(object *exp, object *env);
+object *eval_definition(object *exp, object *env);
+object *eval(object *exp, object *env);
 /*      WRITE       */
 void write(object *obj);
 void write_pair(object *pair);
